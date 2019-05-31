@@ -1,0 +1,108 @@
+---
+title: Overview
+order: 1
+layout: page
+---
+
+[[vaadin-angular2-polymer.overview]]
+= Angular 2 Integration
+
+The `angular2-polymer` is a directive factory that aims at bridging the gaps between using link:https://www.polymer-project.org[Polymer] based Web Components in link:https://angular.io/[Angular 2] applications.
+
+It scrapes the Polymer element API in order to define Angular 2 `outputs` and `inputs`, to apply the `ngControl` and the `ngForm` directives, and to observe DOM changes updating the element's DOM tree appropriately.
+
+Since Vaadin Elements are built using Polymer, you need the [literal]#https://github.com/vaadin/angular2-polymer[@vaadin/angular2-polymer]# directive to enable seamless usage within Angular 2 applications.
+
+== Quick Start
+
+. Install the `angular2-polymer` package and the Polymer element you want to use.
++
+[source,subs="normal"]
+----
+[prompt]#$# [command]#npm# install @vaadin/angular2-polymer
+[prompt]#$# [command]#bower# install [replaceable]#element-name#
+----
+
+.  Load the Web Components polyfill for browsers that don’t have native support for the Web Components standards, and configure Polymer to use Shadow DOM. Then you can import the elements you want to use.
++
+[source,html,subs="normal"]
+.index.html
+----
+<script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+<script>
+  window.Polymer = {
+    dom: 'shadow'
+  };
+</script>
+<link rel="import" href="bower_components/[replaceable]#element-name#/[replaceable]#element-name#.html">
+----
++
+You also need to wait for the "WebComponentsReady" event before bootstrapping the Angular 2 app. The event is fired after all of the web components have finished registering and are ready to be used.
++
+[source,html,subs="normal"]
+.index.html
+----
+<script>
+  document.addEventListener('WebComponentsReady', function() {
+    System.import('app').catch(function(err){ console.error(err); });
+  });
+</script>
+----
+. Import the Angular 2 directives and use them in your code.
++
+[source,typescript,subs="normal"]
+.app/app.module.ts
+----
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { PolymerModule, PolymerElement } from '@vaadin/angular2-polymer';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  imports: +++[+++ PolymerModule +++]+++,
+  declarations: +++[+++
+    AppComponent,
+    PolymerElement('[replaceable]#element-name#')
+  +++]+++,
+  bootstrap: +++[+++ AppComponent +++]+++,
+  schemas: +++[+++ CUSTOM_ELEMENTS_SCHEMA +++]+++
+})
+export class AppModule { }
+----
++
+[source,typescript,subs="normal"]
+.app/app.component.ts
+----
+import { Component } from '@angular2/core';
+
+@Component({
+  selector: 'app-component',
+  template: +++`<+++[replaceable]#element-name#></[replaceable]#element-name#>+++`+++
+})
+export class AppComponent { }
+----
+
+Note, that we also added the [classname]#CUSTOM_ELEMENTS_SCHEMA# to the [classname]#AppModule#. This is required to enable usage of non-standard properties on custom elements in the Angular component templates.
+
+== In case you use Angular 2.1 or 2.0
+You can replace the `app.module.ts` code with the following. Use the old `BrowserModule`
+[source,typescript,subs="normal"]
+.app/app.module.ts
+----
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { PolymerElement } from '@vaadin/angular2-polymer';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  imports: +++[+++ BrowserModule +++]+++,
+  declarations: +++[+++
+    AppComponent,
+    PolymerElement('[replaceable]#element-name#')
+  +++]+++,
+  bootstrap: +++[+++ AppComponent +++]+++,
+  schemas: +++[+++ CUSTOM_ELEMENTS_SCHEMA +++]+++
+})
+export class AppModule { }
+----
+
+link:https://github.com/platosha/angular-polymer/blob/master/docs/tutorial-index.adoc[See the tutorial] for complete instructions how to set up your Angular 2 application to work with Polymer elements.

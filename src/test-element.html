@@ -1,0 +1,42 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-form-element-behavior/iron-form-element-behavior.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+
+<dom-module id="test-element">
+    <template>
+        <div id="nested" nested-object-value$=[[nestedObject.value]] array-object-value$=[[arrayObject.0]]></div>
+        <content id="selected" select=".selected"></content>
+        <content id="all"></content>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'test-element',
+
+        behaviors: [
+            Polymer.IronFormElementBehavior
+        ],
+
+        properties: {
+            value: {
+                value: '',
+                notify: true
+            },
+
+            booleanValue: {
+                type: Boolean
+            },
+
+            nestedObject: {
+                value: {
+                    value: ''
+                }
+            },
+
+            arrayObject: {
+                value: []
+            }
+        }
+    });
+</script>
